@@ -121,3 +121,72 @@ int main() {
     return 0;
 }
 
+
+
+1. EXPERIMENT 1
+using System;
+using System.Diagnostics;
+
+class number1
+{
+    static void Main(string[] args)
+    {
+        try
+        {
+            Process process = new Process();
+            process.StartInfo.FileName = "whoami";
+            process.StartInfo.UseShellExecute = false;
+
+            process.Start();
+
+            Console.WriteLine("Process started successfully");
+            Console.WriteLine("Process ID is: " + process.Id);
+
+            process.WaitForExit();
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Process failed");
+        }
+    }
+}
+
+
+2. EXPERIMENT 1.2
+
+   #include <iostream>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <cstdlib>
+
+using namespace std;
+
+class Process {
+public:
+    void run() {
+        int pid;
+        pid = fork();
+
+        if (pid < 0) {
+            cout << "Fork failed" << endl;
+            exit(1);
+        }
+        else if (pid == 0) {
+            // child process
+            execlp("whoami", "whoami", NULL);
+            exit(0);
+        }
+        else {
+            // parent process
+            cout << "Process ID is: " << getpid() << endl;
+            wait(NULL);
+        }
+    }
+};
+
+int main() {
+    Process p;
+    p.run();
+    return 0;
+}
+
