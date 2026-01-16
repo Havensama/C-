@@ -1,0 +1,28 @@
+#include <iostream>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <cstdlib>
+
+using namespace std;
+
+int main() {
+    pid_t pid = fork(); // Create a new process
+
+    if (pid < 0) {
+        cerr << "Fork failed!" << endl;
+        exit(1);
+    } else if (pid == 0) {
+        // Child process: Execute the "whoami" command
+        execlp("whoami", "whoami", NULL);
+        // If execlp fails, exit
+        cerr << "execlp failed!" << endl;
+        exit(1);
+    } else {
+        // Parent process: Print the process ID and wait for the child
+        cout << "\nProcess ID is: " << getpid() << endl;
+        wait(NULL); // Wait for child process to finish
+    }
+
+    return 0;
+}
