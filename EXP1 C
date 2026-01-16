@@ -1,0 +1,46 @@
+#include <iostream>
+#include <cstdlib>
+#include <stdexcept>
+#include <memory>
+#include <array>
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <unistd.h>
+#endif
+
+using namespace std;
+
+int main() {
+    // Print Process ID
+#ifdef _WIN32
+    cout << "\nProcess ID is: " << GetCurrentProcessId() << endl;
+#else
+    cout << "\nProcess ID is: " << getpid() << endl;
+#endif
+
+    try {
+        string command = "whoami";
+
+        array<char, 128> buffer;
+        string result;
+
+        shared_ptr<FILE> pipe(popen(command.c_str(), "r"), fclose);
+        if (!pipe) {
+            throw runtime_error("Failed to start process");
+        }
+
+        while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+            result += buffer.data();
+        }
+
+        cout << result;
+
+    } catch (const exception& ex) {
+        cout << "Failed to start process: " << ex.what() << endl;
+        return 1;
+    }
+
+    return 0;
+}
