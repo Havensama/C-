@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+
 using namespace std;
 
 int main() {
@@ -11,6 +12,7 @@ int main() {
 
     vector<int> bt(n), wt(n), tat(n), priority(n);
 
+    // Input burst times and priorities for the processes
     for (int i = 0; i < n; i++) {
         cout << "\nEnter Burst Time for Process " << i << ": ";
         cin >> bt[i];
@@ -18,7 +20,7 @@ int main() {
         cin >> priority[i];
     }
 
-    // Sort processes by priority (non-preemptive: higher priority first)
+    // Sort processes by priority (lower priority number means higher priority)
     for (int i = 0; i < n - 1; i++) {
         for (int j = i + 1; j < n; j++) {
             if (priority[i] > priority[j]) {
@@ -38,16 +40,18 @@ int main() {
     // Calculate waiting and turnaround times
     wt[0] = 0; // First process waits 0
     tat[0] = bt[0];
+
     for (int i = 1; i < n; i++) {
         wt[i] = wt[i - 1] + bt[i - 1];
         tat[i] = tat[i - 1] + bt[i];
         wtavg += wt[i];
         tatavg += tat[i];
     }
+
     wtavg += wt[0]; // Add first process
     tatavg += tat[0];
 
-    // Output results
+    // Output the results
     cout << "\t PROCESS \tBURST TIME \t PRIORITY \t WAITING TIME\t TURNAROUND TIME\n";
     for (int i = 0; i < n; i++) {
         cout << "\n\t P" << i << "\t\t " << bt[i] << "\t\t " << priority[i]
