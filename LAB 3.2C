@@ -1,0 +1,61 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n, temp;
+    float wtavg = 0, tatavg = 0;
+
+    cout << "\nEnter the number of processes: ";
+    cin >> n;
+
+    vector<int> bt(n), wt(n), tat(n), priority(n);
+
+    for (int i = 0; i < n; i++) {
+        cout << "\nEnter Burst Time for Process " << i << ": ";
+        cin >> bt[i];
+        cout << "Enter Priority for Process " << i << " (lower number = higher priority): ";
+        cin >> priority[i];
+    }
+
+    // Sort processes by priority (non-preemptive: higher priority first)
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (priority[i] > priority[j]) {
+                // Swap burst times
+                temp = bt[i];
+                bt[i] = bt[j];
+                bt[j] = temp;
+
+                // Swap priorities
+                temp = priority[i];
+                priority[i] = priority[j];
+                priority[j] = temp;
+            }
+        }
+    }
+
+    // Calculate waiting and turnaround times
+    wt[0] = 0; // First process waits 0
+    tat[0] = bt[0];
+    for (int i = 1; i < n; i++) {
+        wt[i] = wt[i - 1] + bt[i - 1];
+        tat[i] = tat[i - 1] + bt[i];
+        wtavg += wt[i];
+        tatavg += tat[i];
+    }
+    wtavg += wt[0]; // Add first process
+    tatavg += tat[0];
+
+    // Output results
+    cout << "\t PROCESS \tBURST TIME \t PRIORITY \t WAITING TIME\t TURNAROUND TIME\n";
+    for (int i = 0; i < n; i++) {
+        cout << "\n\t P" << i << "\t\t " << bt[i] << "\t\t " << priority[i]
+             << "\t\t " << wt[i] << "\t\t " << tat[i];
+    }
+
+    cout << "\nAverage Waiting Time: " << wtavg / n;
+    cout << "\nAverage Turnaround Time: " << tatavg / n;
+
+    return 0;
+}
