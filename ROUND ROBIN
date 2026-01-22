@@ -1,0 +1,60 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n, timeQuantum;
+    int bt[20], rt[20], wt[20], tat[20];
+    int time = 0, remain, i = 0;
+    float avgWT = 0, avgTAT = 0;
+
+    cout << "Enter number of processes: ";
+    cin >> n;
+    remain = n;
+
+    cout << "Enter burst time for each process:\n";
+    for (i = 0; i < n; i++) {
+        cout << "Process " << i + 1 << ": ";
+        cin >> bt[i];
+        rt[i] = bt[i];   // remaining time
+        wt[i] = 0;
+    }
+
+    cout << "Enter time quantum: ";
+    cin >> timeQuantum;
+
+    cout << "\nProcess\tBurst Time\tWaiting Time\tTurnaround Time\n";
+
+    i = 0;
+    while (remain > 0) {
+        if (rt[i] > 0) {
+            if (rt[i] <= timeQuantum) {
+                time += rt[i];
+                rt[i] = 0;
+                remain--;
+
+                tat[i] = time;
+                wt[i] = tat[i] - bt[i];
+
+                avgWT += wt[i];
+                avgTAT += tat[i];
+
+                cout << "P" << i + 1 << "\t\t"
+                     << bt[i] << "\t\t"
+                     << wt[i] << "\t\t"
+                     << tat[i] << endl;
+            } else {
+                rt[i] -= timeQuantum;
+                time += timeQuantum;
+            }
+        }
+        i = (i + 1) % n;
+    }
+
+    avgWT /= n;
+    avgTAT /= n;
+
+    cout << "\nAverage Waiting Time = " << avgWT;
+    cout << "\nAverage Turnaround Time = " << avgTAT << endl;
+
+    return 0;
+}
